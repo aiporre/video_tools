@@ -1,2 +1,2 @@
 # video tools
-Some usefull scripts to process videos as Objects. 
+Some useful scripts to process videos as Objects. 
