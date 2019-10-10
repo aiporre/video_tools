@@ -31,7 +31,8 @@ class VideoToGray(object):
             (self.status, self.frame) = self.capture.read()
             self.frame_counter +=1
 	# Verify if split is necesary
-        if self.split>0 and self.frame_counter % 1800*self.split == 0:
+        K = (1800*self.split) 
+        if self.split>0 and self.frame_counter % K == 0:
             self.new_output()
     def show_frame(self):
         # Convert to grayscale and display frames
