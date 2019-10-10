@@ -20,6 +20,7 @@ class VideoToGray(object):
         self.output_video = cv2.VideoWriter(output_path, self.codec, 30, (self.frame_width, self.frame_height), isColor=False)
 
     def new_output(self):
+        self.output_video.release()
         self.part_counter += 1
         new_output_path = self.output_path[:-4]+ "_" + str(self.part_counter) + ".avi"
         self.output_video = cv2.VideoWriter(new_output_path, self.codec, 30, (self.frame_width, self.frame_height), isColor=False)
@@ -66,7 +67,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     video_src = args.target 
     print(video_src)
-    video_stream_widget = VideoToGrayscaleWidget(video_src, output_path = args.output, split=args.split)
+    video_stream_widget = VideoToGray(video_src, output_path = args.output, split=args.split)
     print('stop convertion by pressing q')
     while video_stream_widget.capture.isOpened():
         try:
