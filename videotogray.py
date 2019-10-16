@@ -1,8 +1,9 @@
 import cv2
 import argparse
+from denoising import ContrastDenoiser, N2VDenoiser
 
 class VideoToGray(object):
-    def __init__(self, src=0, output_path = 'output.avi', split=-1):
+    def __init__(self, src=0, output_path = 'output.avi', split=-1, denoiser=None):
         # Create a VideoCapture object
         self.capture = cv2.VideoCapture(src)
         self.output_path = output_path
@@ -18,6 +19,9 @@ class VideoToGray(object):
             output_path = self.output_path[:-4]+"_1.avi"
             self.part_counter = 1
         self.output_video = cv2.VideoWriter(output_path, self.codec, 30, (self.frame_width, self.frame_height), isColor=False)
+        
+        #Denoiser object is applied to each image frame
+        self.denoiser = denoiser
 
     def new_output(self):
         self.output_video.release()
@@ -38,6 +42,16 @@ class VideoToGray(object):
         # Convert to grayscale and display frames
         if self.status:
             self.gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+            if self.denoiser is not None:
+                print(type(self.gray))
+                print(self.gray.shape)
+                print(self.gray.max())
+                print(self.gray.dtype)
+                self.gray = self.denoiser(self.gray)
+                self.gray = (255.0*self.gray).astype('uint8')
+                print(self.gray.shape)
+                print(self.gray.dtype)
+                print(self.gray.max())
             cv2.imshow('grayscale frame', self.gray)
 
         # Press 'q' on keyboard to stop recording
@@ -65,10 +79,18 @@ if __name__ == '__main__':
                     help='show video during convertion flag (y(default), or n))')
     parser.add_argument('--split', metavar='split', type=int, default=-1,
                     help='split videos in 1 minute at 30fps. minus one means no split (default)')
+    parser.add_argument('--denoiser', metavar='denoiser', type=str, default=None,
+                    help='Denoiser call method to remove noise from each image. Options: Contrast, N2V, None(default))')
     args = parser.parse_args()
     video_src = args.target 
     print(video_src)
-    video_stream_widget = VideoToGray(video_src, output_path = args.output, split=args.split)
+    if args.denoiser == 'N2V':
+        denoiser = N2VDenoiser()
+    elif args.denoiser == 'Contrast':
+        denoiser = ContrastDenoiser()
+    else:
+        denoiser = None 
+    video_stream_widget = VideoToGray(video_src, output_path = args.output, split=args.split, denoiser=denoiser)
     print('stop convertion by pressing q')
     while video_stream_widget.capture.isOpened():
         try:
