@@ -26,6 +26,7 @@ class N2VDenoiser(object):
             self.model = N2V(config=None, name=model_name, basedir=basedir)
         except Exception as e:
             print('Exception: ', e)
+        assert axes in ['YX','YXC'], 'Not supported axes configuration ' + str(axes) + '. Supported options are ' + str(['YX','YXC'])
         self.axes = axes
 
     def __call__(self,img):
