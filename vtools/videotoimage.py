@@ -56,15 +56,17 @@ class VideoToGrayImage(VideoToImage):
             self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
 
 
-def run(video_src, video_out=None, extension = '.png',plot='y'):
+def run(video_src, output_path=None, extension ='.png', plot='y'):
     '''
     run default video to image
     '''
-    if video_out is None:
-        video_out = os.path.dirname(video_src)
-        video_out = os.path.join(video_out,'converted.avi')
+    if output_path is None:
+        output_path = os.path.dirname(video_src)
+        output_path = os.path.join(output_path,'video_images')
+        if not os.path.exists(output_path):
+            os.mkdir(output_path)
 
-    video_stream_widget = VideoToGrayImage(video_src, output_path = video_out, extension = extension)
+    video_stream_widget = VideoToGrayImage(video_src, output_path = output_path, extension = extension)
     if plot == 'y':
         print('stop convertion by pressing q')
     for _ in tqdm(range(video_stream_widget.n_frames)):
