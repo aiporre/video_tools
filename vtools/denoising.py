@@ -19,13 +19,14 @@ def normalize(img):
     return img
 
 class N2VDenoiser(object):
-    def __init__(self, axes='YX'):
+    def __init__(self):
         model_name = 'N2V'
         basedir = 'models'
         try:
             self.model = N2V(config=None, name=model_name, basedir=basedir)
         except Exception as e:
             print('Exception: ', e)
+        axes = self.model.config.axes
         assert axes in ['YX','YXC'], 'Not supported axes configuration ' + str(axes) + '. Supported options are ' + str(['YX','YXC'])
         self.axes = axes
 
