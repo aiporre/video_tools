@@ -57,7 +57,7 @@ class VideoToGrayImage(VideoToImage):
             self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
 
 
-def run(video_src, output_path=None, extension ='.png', plot='y'):
+def run(video_src, output_path=None, extension ='.png', plot='n'):
     '''
     run default video to image
     '''
