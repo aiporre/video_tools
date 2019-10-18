@@ -48,7 +48,7 @@ class VideoToImage(object):
 
 class VideoToGrayImage(VideoToImage):
     def __init__(self, src=0, output_path = './', extension = '.jpg'):
-        super(VideoToImage,self).__init__(src=src, output_path = output_path, extension = extension)
+        super(VideoToGrayImage,self).__init__(src=src, output_path = output_path, extension = extension)
 
     def update(self):
         super().update()
