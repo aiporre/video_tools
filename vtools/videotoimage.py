@@ -40,10 +40,11 @@ class VideoToImage(object):
             filename = os.path.join(self.output_path,"frame_"+str(self.frame_counter) + self.extension)
             cv2.imwrite(filename, self.frame)
 
-    def close(self):
+    def close(self, exit=False):
         self.capture.release()
         cv2.destroyAllWindows()
-        exit(1)
+        if exit:
+            exit(1)
 
 
 class VideoToGrayImage(VideoToImage):
