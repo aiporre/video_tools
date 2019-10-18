@@ -30,7 +30,7 @@ def generate_args(data_path):
     args["learningRate"] = 0.0004  # help="initial learning rate"
     args["unet_n_first"] = 32  # help="number of feature channels in the first u-net layer"
 
-    return args
+    return argparse.Namespace(**args)
 
 def prepare_training_data(args):
     '''
