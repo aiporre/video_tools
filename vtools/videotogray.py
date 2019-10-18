@@ -1,6 +1,6 @@
 import cv2
 import argparse
-from denoising import ContrastDenoiser, N2VDenoiser
+from .denoising import ContrastDenoiser, N2VDenoiser
 
 class VideoToGray(object):
     def __init__(self, src=0, output_path = 'output.avi', split=-1, denoiser=None):
@@ -34,26 +34,20 @@ class VideoToGray(object):
         if self.capture.isOpened():
             (self.status, self.frame) = self.capture.read()
             self.frame_counter +=1
-	# Verify if split is necesary
+        if self.status:
+            self.gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+            if self.denoiser is not None:
+                self.gray = self.denoiser(self.gray)
+                self.gray = (255.0*self.gray).astype('uint8')
+
+        # Verify if split is necesary
         K = (1800*self.split) 
         if self.split>0 and self.frame_counter % K == 0:
             self.new_output()
     def show_frame(self):
         # Convert to grayscale and display frames
         if self.status:
-            self.gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
-            if self.denoiser is not None:
-                print(type(self.gray))
-                print(self.gray.shape)
-                print(self.gray.max())
-                print(self.gray.dtype)
-                self.gray = self.denoiser(self.gray)
-                self.gray = (255.0*self.gray).astype('uint8')
-                print(self.gray.shape)
-                print(self.gray.dtype)
-                print(self.gray.max())
             cv2.imshow('grayscale frame', self.gray)
-
         # Press 'q' on keyboard to stop recording
         key = cv2.waitKey(1)
         if key == ord('q'):

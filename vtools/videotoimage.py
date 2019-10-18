@@ -19,10 +19,12 @@ class VideoToGrayImage(object):
         if self.capture.isOpened():
             (self.status, self.frame) = self.capture.read()
             self.frame_counter +=1
+        if self.status:
+            self.gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+
     def show_frame(self):
         # Convert to grayscale and display frames
         if self.status:
-            self.gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
             cv2.imshow('grayscale frame', self.gray)
 
         # Press 'q' on keyboard to stop recording

@@ -11,16 +11,19 @@ from skimage import exposure
 
 
 class N2VDenoiser(object):
-    def __init__(self):
-        model_name = 'n2v_2D'
+    def __init__(self, axes='YX'):
+        model_name = 'N2V'
         basedir = 'models'
         try:
             self.model = N2V(config=None, name=model_name, basedir=basedir)
         except Exception as e:
             print('Exception: ', e)
-    def __call__(self):
-        return  model.predict(img, axes='YXC')
+        self.axes = axes
 
+    def __call__(self,img):
+        pred = self.model.predict(img, axes=self.axes)
+        pred = np.clip(pred,0.0,1.0)
+        return pred
 class ContrastDenoiser(object):
     def __call__(self,img):
         img_eq = exposure.equalize_hist(img)
