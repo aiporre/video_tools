@@ -77,12 +77,15 @@ def run(video_src, video_out=None, split=-1, transform='n2v', plot='n', gray='y'
     if video_out is None:
         video_out = os.path.dirname(video_src)
         video_out = os.path.join(video_out,'converted.avi')
+    transforms = []
+    if gray == 'y':
+        transforms.append(ToGray())
+
     if transform == 'n2v':
         # creates the transformation
-        if gray=='y':
-            transform = PipeLine([ToGray(),N2VDenoiser()])
-        else:
-            transform = N2VDenoiser()
+        transforms.append(N2VDenoiser())
+    if len(transforms)>0:
+        transform = PipeLine(transforms)
     else:
         transform = None
 
