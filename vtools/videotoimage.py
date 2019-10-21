@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 
 class VideoToImage(object):
-    def __init__(self, src=0, output_path = './', extension = '.jpg'):
+    def __init__(self, src=0, output_path = './', extension = '.jpg', prefix='frame_', padding=-1):
         # Create a VideoCapture object
         self.capture = cv2.VideoCapture(src)
         self.output_path = output_path
@@ -15,6 +15,8 @@ class VideoToImage(object):
         self.frame_height = int(self.capture.get(4))
         self.n_frames = int(self.capture.get(7))
         self.extension = extension
+        self.prefix = prefix
+        self.padding = padding
 
     def update(self):
         # Read the next frame
@@ -37,7 +39,10 @@ class VideoToImage(object):
     def save_frame(self):
         # Save grayscale frame into video output file
         if self.status: # self.capture.isOpened():
-            filename = os.path.join(self.output_path,"frame_"+str(self.frame_counter) + self.extension)
+            if self.padding > 0:
+                filename = os.path.join(self.output_path, self.prefix + "{1:0{0}}".format(self.padding,self.frame_counter) + self.extension)
+            else:
+                filename = os.path.join(self.output_path, self.prefix + str(self.frame_counter) + self.extension)
             cv2.imwrite(filename, self.frame)
 
     def close(self, exit=False):
@@ -48,8 +53,8 @@ class VideoToImage(object):
 
 
 class VideoToGrayImage(VideoToImage):
-    def __init__(self, src=0, output_path = './', extension = '.jpg'):
-        super(VideoToGrayImage,self).__init__(src=src, output_path = output_path, extension = extension)
+    def __init__(self, src=0, output_path = './', extension = '.jpg', prefix='frame_', padding=-1):
+        super(VideoToGrayImage,self).__init__(src=src, output_path = output_path, extension = extension, prefix=prefix, padding=padding)
 
     def update(self):
         super().update()
@@ -57,7 +62,7 @@ class VideoToGrayImage(VideoToImage):
             self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
 
 
-def run(video_src, output_path=None, extension ='.png', plot='n'):
+def run(video_src, output_path=None, extension ='.png', plot='n', prefix='frame_', padding=-1, gray = 'y'):
     '''
     run default video to image
     '''
@@ -66,8 +71,11 @@ def run(video_src, output_path=None, extension ='.png', plot='n'):
         output_path = os.path.join(output_path,'video_images')
         if not os.path.exists(output_path):
             os.mkdir(output_path)
+    if gray == 'y':
+        video_stream_widget = VideoToGrayImage(video_src, output_path = output_path, extension = extension, prefix=prefix, padding=padding)
+    else:
+        video_stream_widget = VideoToImage(video_src, output_path=output_path, extension=extension, prefix=prefix, padding=padding)
 
-    video_stream_widget = VideoToGrayImage(video_src, output_path = output_path, extension = extension)
     if plot == 'y':
         print('stop convertion by pressing q')
     for _ in tqdm(range(video_stream_widget.n_frames)):
