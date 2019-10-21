@@ -33,7 +33,13 @@ class N2VDenoiser(object):
     def __call__(self,img):
         if img.max()>1.0 or img.min()<0.0:
             img = normalize(img)
-        pred = self.model.predict(img, axes=self.axes)
+        if len(img.shape) == 2:
+            axes = 'YX'
+        elif len(img.shape) == 3:
+            axes = 'YXC'
+        else:
+            raise Exception('Invalid format image: ', img.shape, 'formats supported YX and YXC')
+        pred = self.model.predict(img, axes=axes)
         pred = np.clip(pred,0.0,1.0)
         return pred
 class ContrastDenoiser(object):
