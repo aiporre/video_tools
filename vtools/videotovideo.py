@@ -70,19 +70,21 @@ class VideoToVideo(object):
         else:
             print('Capure stream is closed')
 
-def run(video_src, video_out=None, split=-1, transform=None, plot='n', gray='y'):
+def run(video_src, video_out=None, split=-1, transform='n2v', plot='n', gray='y'):
     '''
     run default video to video
     '''
     if video_out is None:
         video_out = os.path.dirname(video_src)
         video_out = os.path.join(video_out,'converted.avi')
-    if transform is None:
+    if transform == 'n2v':
         # creates the transformation
         if gray=='y':
             transform = PipeLine([ToGray(),N2VDenoiser()])
         else:
             transform = N2VDenoiser()
+    else:
+        transform = None
 
     video_stream_widget = VideoToVideo(video_src, output_path=video_out, split=split, transform=transform)
     print('stop convertion by pressing q')
