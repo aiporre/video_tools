@@ -63,7 +63,6 @@ class VideoToVideo(object):
         self.capture.release()
         self.output_video.release()
         cv2.destroyAllWindows()
-        exit(1)
 
     def save_frame(self):
         # Save grayscale frame into video output file
