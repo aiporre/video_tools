@@ -44,6 +44,8 @@ class VideoToVideo(object):
             if self.transform is not None:
                 self.frame_tr = self.transform(self.frame)
                 self.frame_tr = (255.0*self.frame_tr).astype('uint8')
+            else:
+                self.frame_tr  = self.frame
         if self.split>0 and self.frame_counter % K == 0:
             self.new_output()
     def show_frame(self):
