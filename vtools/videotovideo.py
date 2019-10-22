@@ -7,7 +7,7 @@ from .pipeline import PipeLine
 from tqdm import tqdm
 
 class VideoToVideo(object):
-    def __init__(self, src=0, output_path = 'output.avi', split=-1, transform=None):
+    def __init__(self, src=0, output_path = 'output.avi', split=-1, transform=None, gray='y'):
         # Create a VideoCapture object
         self.capture = cv2.VideoCapture(src)
         self.output_path = output_path
@@ -22,7 +22,11 @@ class VideoToVideo(object):
         if self.split>0:
             output_path = self.output_path[:-4]+"_1.avi"
             self.part_counter = 1
-        self.output_video = cv2.VideoWriter(output_path, self.codec, 30, (self.frame_width, self.frame_height), isColor=False)
+        if gray == 'y':
+            self.isColor = False
+        else:
+            self.isColor = True
+        self.output_video = cv2.VideoWriter(output_path, self.codec, 30, (self.frame_width, self.frame_height), isColor=self.isColor)
         
         #transform object is applied to each image frame
         self.transform = transform
@@ -31,7 +35,7 @@ class VideoToVideo(object):
         self.output_video.release()
         self.part_counter += 1
         new_output_path = self.output_path[:-4]+ "_" + str(self.part_counter) + ".avi"
-        self.output_video = cv2.VideoWriter(new_output_path, self.codec, 30, (self.frame_width, self.frame_height), isColor=False)
+        self.output_video = cv2.VideoWriter(new_output_path, self.codec, 30, (self.frame_width, self.frame_height), isColor=self.isColor)
 
     def update(self):
         # Read the next frame 
@@ -90,7 +94,7 @@ def run(video_src, video_out=None, split=-1, transform='n2v', plot='n', gray='y'
     else:
         transform = None
 
-    video_stream_widget = VideoToVideo(video_src, output_path=video_out, split=split, transform=transform)
+    video_stream_widget = VideoToVideo(video_src, output_path=video_out, split=split, transform=transform, gray=gray)
     print('stop convertion by pressing q')
     n_frames = int(video_stream_widget.capture.get(7))
     for _ in tqdm(range(n_frames)):
