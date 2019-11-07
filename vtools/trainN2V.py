@@ -4,9 +4,10 @@ import sys
 import argparse
 from n2v.models import N2VConfig, N2V
 from n2v.internals.N2V_DataGenerator import N2V_DataGenerator
+import numpy as np
 print('everything imported')
 
-def generate_args(data_path):
+def generate_args(data_path, fileName = '*.png', dims = 'XY'):
     '''
     Generates the arguments to prepare data
     :param data_path: path to the training_images
@@ -16,9 +17,9 @@ def generate_args(data_path):
     args["baseDir"] = 'models'  # help="base directory in which your network will live"
     args["name"] = 'N2V'  # help="name of your network"
     args["dataPath"] = data_path  # help="The path to your training data"
-    args["fileName"] = '*.png'  # help="name of your training data file"
+    args["fileName"] = fileName  # help="name of your training data file"
     args["validationFraction"] = 5.0  # help="Fraction of data you want to use for validation (percent)"
-    args["dims"] = 'XY'  # help="dimensions of your data, can include: X,Y,Z,C (channel), T (time)"
+    args["dims"] = dims  # help="dimensions of your data, can include: X,Y,Z,C (channel), T (time)"
     args["patchSizeXY"] = 64  # help="XY-size of your training patches"
     args["patchSizeZ"] = 64  # , help="Z-size of your training patches"
     args["epochs"] = 100  #  help="number of training epochs"
@@ -40,9 +41,29 @@ def prepare_training_data(args):
     '''
 
     datagen = N2V_DataGenerator()
-    imgs = datagen.load_imgs_from_directory(directory=args.dataPath, dims=args.dims, filter=args.fileName)
+    dim = args.dim
+    try:
+        imgs = datagen.load_imgs_from_directory(directory=args.dataPath, dims=args.dims, filter=args.fileName)
+    except Exception as e:
+        if args.dim == 'XY':
+            dim = 'YXC'
+        elif args.dim == 'YX':
+            dim = 'YXC'
+        elif args.dim == 'YXC':
+            dim = 'XY'
+        elif args.dim == 'XYC':
+            dim = 'XY'
+        else:
+            raise Exception('Bad dimension input: ' + str(dim) + '.')
+        print('WARINING: ERROR loading. Attemting to load with other dimension. Last ', args.dim,'. Current ', dim)
+        imgs = datagen.load_imgs_from_directory(directory=args.dataPath, dims=args.dims, filter=args.fileName)
+
     print("number of images to train: ", len(imgs))
     print("imgs.shape", imgs[0].shape)
+    if 'C' in dim and imgs[0].shape[-1]==4:
+        print('prev shape of images: ', imgs.shape)
+        imgs = np.array([im[...,0:2] for im in imgs])
+        print('new shape of images: ', imgs.shape)
 
     # Here we extract patches for training and validation.
     pshape = (args.patchSizeXY, args.patchSizeXY)
