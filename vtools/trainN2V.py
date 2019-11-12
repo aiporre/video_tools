@@ -41,27 +41,27 @@ def prepare_training_data(args):
     '''
 
     datagen = N2V_DataGenerator()
-    dim = args.dim
+    dims = args.dims
     try:
         imgs = datagen.load_imgs_from_directory(directory=args.dataPath, dims=args.dims, filter=args.fileName)
     except Exception as e:
-        if args.dim == 'XY':
-            dim = 'YXC'
-        elif args.dim == 'YX':
-            dim = 'YXC'
-        elif args.dim == 'YXC':
-            dim = 'XY'
-        elif args.dim == 'XYC':
-            dim = 'XY'
+        if args.dims == 'XY':
+            dims = 'YXC'
+        elif args.dims == 'YX':
+            dims = 'YXC'
+        elif args.dims == 'YXC':
+            dims = 'XY'
+        elif args.dims == 'XYC':
+            dims = 'XY'
         else:
-            raise Exception('Bad dimension input: ' + str(dim) + '.')
-        print('WARINING: ERROR loading. Attemting to load with other dimension. Last ', args.dim,'. Current ', dim)
+            raise Exception('Bad dimension input: ' + str(dims) + '.')
+        print('WARINING: ERROR loading. Attemting to load with other dimension. Last ', args.dims,'. Current ', dims)
         imgs = datagen.load_imgs_from_directory(directory=args.dataPath, dims=args.dims, filter=args.fileName)
     print('Making as as float 32')
     imgs = [img.astype(np.float32) for img in imgs]
     print("number of images to train: ", len(imgs))
     print("imgs.shape", imgs[0].shape)
-    if 'C' in dim and imgs[0].shape[-1]==4:
+    if 'C' in dims and imgs[0].shape[-1]==4:
         print('prev shape of images: ', imgs.shape)
         imgs = np.array([im[...,0:2] for im in imgs])
         print('new shape of images: ', imgs.shape)
