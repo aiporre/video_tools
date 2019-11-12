@@ -4,7 +4,8 @@ requirements = [
                 'tqdm==4.36.1',
                 'n2v==0.1.8 ',
                 'Keras==2.2.5',
-                'scikit-image==0.16.1'
+                'scikit-image==0.16.1',
+                'tiffile==2018.10.18'
                 ]
 setup(name='vtools',
       version='0.1',
