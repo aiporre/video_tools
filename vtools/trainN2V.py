@@ -57,7 +57,8 @@ def prepare_training_data(args):
             raise Exception('Bad dimension input: ' + str(dim) + '.')
         print('WARINING: ERROR loading. Attemting to load with other dimension. Last ', args.dim,'. Current ', dim)
         imgs = datagen.load_imgs_from_directory(directory=args.dataPath, dims=args.dims, filter=args.fileName)
-
+    print('Making as as float 32')
+    imgs = [img.astype(np.float32) for img in imgs]
     print("number of images to train: ", len(imgs))
     print("imgs.shape", imgs[0].shape)
     if 'C' in dim and imgs[0].shape[-1]==4:
