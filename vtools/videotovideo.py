@@ -27,7 +27,7 @@ class VideoToVideo(object):
         else:
             self.isColor = True
         self.output_video = cv2.VideoWriter(output_path, self.codec, 30, (self.frame_width, self.frame_height), isColor=self.isColor)
-        
+
         #transform object is applied to each image frame
         self.transform = transform
 
@@ -38,7 +38,7 @@ class VideoToVideo(object):
         self.output_video = cv2.VideoWriter(new_output_path, self.codec, 30, (self.frame_width, self.frame_height), isColor=self.isColor)
 
     def update(self):
-        # Read the next frame 
+        # Read the next frame
         if self.capture.isOpened():
             (self.status, self.frame) = self.capture.read()
             self.frame_counter +=1
@@ -121,7 +121,7 @@ if __name__ == '__main__':
                     help='target avi video full path')
     parser.add_argument('--output', metavar='output', type=str,
                     help='output avi video full path')
-    parser.add_argument('--plot', metavar='plot', type=str, default='y', 
+    parser.add_argument('--plot', metavar='plot', type=str, default='y',
                     help='show video during convertion flag (y(default), or n))')
     parser.add_argument('--split', metavar='split', type=int, default=-1,
                     help='split videos in 1 minute at 30fps. minus one means no split (default)')
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     parser.add_argument('--gray', metavar='gray', type=str, default='y',
                     help='convert to gray flag ( y or n , default=y)')
     args = parser.parse_args()
-    video_src = args.target 
+    video_src = args.target
     print(video_src)
     # creates the transformation pipeline
     transforms = []
