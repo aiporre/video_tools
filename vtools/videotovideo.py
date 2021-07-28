@@ -75,7 +75,7 @@ class VideoToVideo(object):
         else:
             print('Capure stream is closed')
 
-def run(video_src, video_out=None, split=-1, transform='n2v', plot='n', gray='y'):
+def run(video_src, video_out=None, split=-1, transform='n2v', plot='n', gray='y', custom_transform=None):
     '''
     run default video to video
     '''
@@ -89,6 +89,12 @@ def run(video_src, video_out=None, split=-1, transform='n2v', plot='n', gray='y'
     if transform == 'n2v':
         # creates the transformation
         transforms.append(N2VDenoiser())
+
+    # appends the custom transform
+    if custom_transform is not None and callable(custom_transform):
+        # creates the transformation
+        transforms.append(custom_transform)
+
     if len(transforms)>0:
         transform = PipeLine(transforms)
     else:
