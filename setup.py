@@ -2,8 +2,8 @@ from setuptools import setup
 requirements = [
                 'opencv-python>=4.1.1.26',
                 'tqdm>=4.36.1',
-                'n2v==0.1.8 ',
-                'Keras==2.2.5',
+                'n2v>=0.3.0 ',
+                'Keras>=2.3.1',
                 'scikit-image>=0.16.1',
                 'tiffile>=2018.10.18'
                 ]
