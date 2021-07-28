@@ -3,9 +3,6 @@ try:
 except Exception as e:
     print('Importing exception noise to void: ', e)
 import numpy as np
-from matplotlib import pyplot as plt
-from matplotlib.image import imread, imsave
-from csbdeep.io import save_tiff_imagej_compatible
 from skimage import exposure
 
 def normalize(img):
